@@ -10,14 +10,19 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
-  const [todo, setTodo] = useState<string[]>([]);
-  const [text, setText] = useState<string | any>("");
+  type todol = {
+    id: string;
+    text: string;
+  };
+
+  const [todo, setTodo] = useState<todol[]>([]);
+  const [text, setText] = useState<string>("");
 
   const saveToStorage = useCallback(async () => {
     try {
       await AsyncStorage.setItem("todo", JSON.stringify(todo));
     } catch (e) {
-      console.log(e);
+      alert(e);
     }
   }, [todo]);
 
@@ -41,17 +46,20 @@ export default function Index() {
   }, [todo, saveToStorage]);
 
   const handleAddToDo = (el: string) => {
+    const newTodo = {
+      id: Date.now().toString(),
+      text: el,
+    };
     if (el.length === 0) {
       alert("please enter a task");
     } else {
-      setTodo([...todo, el]);
+      setTodo([...todo, newTodo]);
       setText("");
     }
   };
 
-  
   const handleDelete = (index: number) => {
-    const newTodo = todo.filter((i) => todo.indexOf(i) !== index);
+    const newTodo = todo.filter((_, i) => i !== index);
     setTodo(newTodo);
   };
 
@@ -84,10 +92,10 @@ export default function Index() {
         <View>
           {todo.map((item, index) => (
             <TaskList
-              key={index}
+              key={item.id}
               handleDelete={handleDelete}
               index={index}
-              item={item}
+              item={item.text}
             />
           ))}
         </View>
