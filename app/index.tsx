@@ -49,6 +49,7 @@ export default function Index() {
     }
   };
 
+  
   const handleDelete = (index: number) => {
     const newTodo = todo.filter((i) => todo.indexOf(i) !== index);
     setTodo(newTodo);
